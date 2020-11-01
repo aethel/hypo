@@ -5,7 +5,9 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    mortgageCalculations: {}
+    mortgageCalculations: {},
+    brokerTax: 0.0714,
+    cityTax: 0.06
   },
   mutations: {
     setCalculations: (state, payload) => state.mortgageCalculations = payload
