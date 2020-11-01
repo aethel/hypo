@@ -5,7 +5,6 @@
       <li>
         <label for="commission">Real Estate Commission</label>
         <input
-          required
           type="checkbox"
           v-model.lazy="mortgageCalculations.commission"
           id="commission"
@@ -17,7 +16,7 @@
         <input
           type="number"
           id="purchasePrice"
-          v-modelnumber.lazy="mortgageCalculations.purchasePrice"
+          v-model.number.lazy="mortgageCalculations.purchasePrice"
           inputmode="number"
           value="mortgageCalculations.purchasePrice"
         />
@@ -51,6 +50,7 @@
 </template>
 
 <script lang="ts">
+import store from '@/store';
 import { Component, Prop, Vue } from "vue-property-decorator";
 
 @Component
@@ -67,6 +67,10 @@ export default class Form extends Vue {
   }
   recalculate = () => {
     console.log(this.calculations);
+    store.dispatch('updateCalculations',this.calculations).then(response => {
+        console.log(response);
+        
+    })
   };
 }
 </script>
