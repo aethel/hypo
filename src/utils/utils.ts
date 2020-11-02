@@ -20,3 +20,17 @@ export const loanToValue = (
   rawLoanAmount: number,
   propertyPrice: number
 ): number => rawLoanAmount / propertyPrice;
+
+const currencyFormattingOptions = {
+  style: "currency",
+  currency: "EUR",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+};
+export const toCurrency = (value: number): string =>
+  value.toLocaleString("de-DE", currencyFormattingOptions);
+
+export const toPercentage = (value: number): string =>
+  new Intl.NumberFormat("de-DE", {
+    style: "percent",
+  }).format(value);

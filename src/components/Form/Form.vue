@@ -82,7 +82,6 @@ export default class Form extends Vue {
   // value as percentage
 
   recalculate = () => {
-    console.log(this.mortgageCalculations.repayment);
     const {
       purchasePrice,
       totalSavings,

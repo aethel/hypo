@@ -7,7 +7,9 @@ export default new Vuex.Store({
   state: {
     mortgageCalculations: {},
     brokerTax: 0.0714,
-    cityTax: 0.06
+    cityTax: 0.06,
+    rawLoanAmount: 0,
+    loanToValue: 0
   },
   mutations: {
     setCalculations: (state, payload) => state.mortgageCalculations = payload
