@@ -20,7 +20,7 @@ export default class AsideBox extends Vue {
   
   mounted() {
     if(this.formatting === 'currency') {
-      this.dataToDisplay = toCurrency(this.data);
+      this.dataToDisplay = toCurrency(+this.data);
     }
     if(this.formatting === 'percentage') {
       this.dataToDisplay = toPercentage(this.data);

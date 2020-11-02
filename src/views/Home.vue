@@ -1,8 +1,8 @@
 <template>
   <div class="home">
   <Form/>
-  <AsideBox data="345" :heading="loanHeading" formatting="currency"/>
-  <AsideBox data="55" :heading="valueHeading" formatting="percentage"/>
+  <AsideBox :data="loanNumber" :heading="loanHeading" formatting="currency"/>
+  <AsideBox :data="valueNumber" :heading="valueHeading" formatting="percentage"/>
   </div>
 </template>
 
@@ -23,6 +23,10 @@ export default class Home extends Vue {
   loanHeading = 'Implied Loan';
   @Prop() 
   valueHeading = 'Loan to value';
+  @Prop() 
+  loanNumber = 42;
+  @Prop() 
+  valueNumber = 0.55;
   // @Prop() 
   // loanHeading = 'Implied Loan';
   // @Prop() 
