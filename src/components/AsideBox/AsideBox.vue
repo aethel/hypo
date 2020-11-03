@@ -1,7 +1,7 @@
 <template>
-  <section>
-    <h2>{{ heading }}</h2>
-    <span v-if="dataToDisplay">{{ dataToDisplay }}</span>
+  <section class='m-asideBox'>
+    <h2 class='m-asideBox__heading'>{{ heading }}</h2>
+    <span class='m-asideBox__content' v-if="dataToDisplay">{{ dataToDisplay }}</span>
     <span v-else>Please fill out the form</span>
   </section>
 </template>
@@ -20,7 +20,7 @@ export default class AsideBox extends Vue {
   
   mounted() {
     if(this.formatting === 'currency') {
-      this.dataToDisplay = toCurrency(+this.data);
+      this.dataToDisplay = toCurrency(this.data);
     }
     if(this.formatting === 'percentage') {
       this.dataToDisplay = toPercentage(this.data);
@@ -29,20 +29,13 @@ export default class AsideBox extends Vue {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.m-asideBox {
+  background:lightgoldenrodyellow;
+  box-shadow: 0 0 10px 5px rgba(0,0,0,0.2);
+  padding: 1vw;
+  &:first-child {
+    margin-bottom: 5vw;
+  }
 }
 </style>

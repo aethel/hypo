@@ -1,49 +1,58 @@
 <template>
-  <form>
+  <form class="a-form">
     <legend>Mortgage Calculator</legend>
-    <ol>
-      <li>
-        <label for="commission">Real Estate Commission</label>
+    <ol class="list">
+      <li class="m-list__listItem">
+        <label class="a-label" for="commission">Real Estate Commission</label>
         <input
           type="checkbox"
+          class="a-input"
           v-model.lazy="mortgageCalculations.commission"
           id="commission"
           checked="mortgageCalculations.comission"
         />
       </li>
-      <li>
-        <label for="purchasePrice">Property Purchase Price</label>
+      <li class="m-list__listItem">
+        <label class="a-label" for="purchasePrice"
+          >Property Purchase Price</label
+        >
         <input
           type="number"
+          class="a-input"
           id="purchasePrice"
           v-model.number.lazy="mortgageCalculations.purchasePrice"
           inputmode="number"
+          @change="recalculateValues($event)"
           value="mortgageCalculations.purchasePrice"
         />
       </li>
-      <li>
-        <label for="totalSavings">Total Savings</label>
+      <li class="m-list__listItem">
+        <label class="a-label" for="totalSavings">Total Savings</label>
         <input
           required
+          class="a-input"
           type="number"
           id="totalSavings"
           v-model.number.lazy="mortgageCalculations.totalSavings"
           inputmode="number"
+          @change="recalculateValues($event)"
           value="mortgageCalculations.totalSavings"
         />
       </li>
-      <li>
-        <label for="repayment">Annual Repayment</label>
+      <li class="m-list__listItem">
+        <label class="a-label" for="repayment">Annual Repayment</label>
         <input
           required
           type="number"
+          class="a-input"
           v-model.number.lazy="mortgageCalculations.repayment"
           id="repayment"
+          @change="recalculateValues($event)"
           value="mortgageCalculations.repayment"
         />
       </li>
-      <li>
-        <button type="button" @click="recalculate">Calculate</button>
+      <li class="m-list__listItem">
+        <button class="a-button" type="button" @click="submit">Calculate</button>
       </li>
     </ol>
   </form>
@@ -57,31 +66,27 @@ import {
   totalCost,
   notaryCosts,
   brokerCosts,
-  stampDutyCosts
+  stampDutyCosts,
+  loanToValue
 } from "@/utils/utils";
-
+import { storeUpdateBus, StoreUpdateEvents } from "@/utils/updateBus";
 interface Query {
-   property_price: number;
-      repayment: number;
-      loan_amount: number;
-      fixation: number[];
+  property_price: number;
+  repayment: number;
+  loan_amount: number;
+  fixation: number[];
 }
 
 @Component
 export default class Form extends Vue {
-  @Prop() private mortgageCalculations: { [key: string]: any } = {
+  @Prop() mortgageCalculations: { [key: string]: any } = {
     commission: false,
     repayment: 0,
     totalSavings: 0,
     purchasePrice: 0
   };
 
-  // Implied loan is represented by the rawLoanAmount formula, format the value
-  // as currency
-  // Loan to value is represented by the loanToValue formula , to format the
-  // value as percentage
-
-  recalculate = () => {
+  recalculateValues = (event: FormDataEntryValue) => {
     const {
       purchasePrice,
       totalSavings,
@@ -89,39 +94,62 @@ export default class Form extends Vue {
     } = this.mortgageCalculations;
     const notary = notaryCosts(purchasePrice as number);
     const broker = brokerCosts(store.state.brokerTax, purchasePrice as number);
-    const stampDuty = stampDutyCosts(store.state.brokerTax, purchasePrice as number);
+    const stampDuty = stampDutyCosts(
+      store.state.brokerTax,
+      purchasePrice as number
+    );
     const total = totalCost(notary, broker, stampDuty);
-    const query: Query = {
-      property_price: purchasePrice,
-      repayment,
-      loan_amount: rawLoanAmount(total, totalSavings, purchasePrice),
-      fixation: [5, 10, 15, 20, 25, 30]
-    };
+    const loanAmount = rawLoanAmount(total, totalSavings, purchasePrice);
+    const loanValue = loanToValue(loanAmount, purchasePrice);
+    if (loanAmount && loanValue) {
+      store.dispatch("updateImpliedLoan", loanAmount);
+      store.dispatch("updateLoanToValue", loanValue);
+    }
+  };
 
-    store
-      .dispatch("updateCalculations", this.mortgageCalculations)
-      .then(response => {
-        console.log(response);
-      });
-    console.log(store.state.mortgageCalculations);
+  submit = () => {
+    const {
+      purchasePrice,
+      totalSavings,
+      repayment
+    } = this.mortgageCalculations;
+    // const query: Query = {
+    //   property_price: purchasePrice,
+    //   repayment,
+    //   loan_amount: loanAmount,
+    //   fixation: [5, 10, 15, 20, 25, 30]
+    // };
   };
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-h3 {
-  margin: 40px 0 0;
-}
-ul {
+.a-ol {
   list-style-type: none;
   padding: 0;
 }
-li {
-  display: inline-block;
-  margin: 0 10px;
+.a-label {
+  margin: 10px;
+  width: 100%;
+  display: block;
 }
-a {
-  color: #42b983;
+
+.m-list__listItem {
+  display: flex;
+  align-items: center;
+
+  .a-input[type="number"],
+  .a-label {
+    flex: 0 1 50%;
+  }
+  &:last-child > .a-button {
+    margin: 0 auto;
+  }
+}
+
+.a-form {
+  background: lightgoldenrodyellow;
+  box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.2);
+  padding: 1vw;
 }
 </style>
